@@ -9,12 +9,6 @@
     
 ?>
 
-<html>
-    <head>
-        <title>Welcome to ConnectMate!</title>
-    </head>
-    
-    <body>
         <div class="user_details column">
             <a href="<?php echo $userLoggedIn; ?>">
                 <img src="<?php echo $user['profile_pic']; ?>">
@@ -48,6 +42,35 @@
             
         </div>    
         
+        <div class="user_details column">
+
+            <h4>Popular</h4>
+
+            <div class="trends">
+                <?php 
+                $query = mysqli_query($con, "SELECT * FROM Trends ORDER BY hits DESC LIMIT 9");
+
+                foreach ($query as $row) {
+
+                    $word = $row['title'];
+                    $word_dot = strlen($word) >= 14 ? "..." : "";
+
+                    $trimmed_word = str_split($word, 14);
+                    $trimmed_word = $trimmed_word[0];
+
+                    echo "<div style'padding: 1px'>";
+                    echo $trimmed_word . $word_dot;
+                    echo "<br></div><br>";
+
+
+                }
+
+                ?>
+            </div>
+
+
+        </div>
+
         <script>
             var userLoggedIn = '<?php echo $userLoggedIn; ?>';
             
@@ -59,7 +82,7 @@
                 $.ajax({
                    url:"includes/handlers/ajax_load_posts.php",
                     type: "POST",
-                    data: "page=1&userLoggedIn="+userLoggedIn,
+                    data: "page=1&userLoggedIn=" + userLoggedIn,
                     cache: false,
                     success: function(data){
                         $('#loading').hide();

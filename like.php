@@ -55,6 +55,10 @@
             $insert_user = mysqli_query($con, "insert into likes values('','$userLoggedIn', '$post_id')");
             
             //Insert Notification
+            if($user_liked != $userLoggedIn) {
+			$notification = new Notification($con, $userLoggedIn);
+			$notification->insertNotification($post_id, $user_liked, "like");
+            }
         }
         
         //unlike button
@@ -66,9 +70,6 @@
             $insert_user = mysqli_query($con, "delete from likes where username = '$userLoggedIn' and post_id='$post_id'");
 
         }
-        
-        
-        
         
         
         $check_query = mysqli_query($con, "select * from likes where username = '$userLoggedIn' and post_id='$post_id'");
