@@ -13,8 +13,3 @@ Notifications
 Live Search
 Dynamic and responsive
 MySQL DB to store all the user information
-Deployed it on Amazon Web Services
-
-EC2 Engine to run the scripts
-S3 service to store scripts and images
-MySQL DB to store user profile information
