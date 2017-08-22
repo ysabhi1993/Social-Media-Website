@@ -145,6 +145,7 @@ fieldset[disabled] .btn-primary.active {
   background-color: #265a88;
   background-image: none;
 }
+
 .btn-success {
   background-image: -webkit-linear-gradient(top, #5cb85c 0%, #419641 100%);
   background-image:      -o-linear-gradient(top, #5cb85c 0%, #419641 100%);
