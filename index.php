@@ -33,7 +33,6 @@
                 <textarea name="post_text" id="post_text" placeholder="Got Something to say?"></textarea>
                 <input type="submit" name="post" id="post_button" value="Post">
                 <hr>
-            
             </form>
             
             <div class = "post_area"></div>
