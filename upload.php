@@ -5,7 +5,7 @@ $profile_id = $user['username'];
 $imgSrc = "";
 $result_path = "";
 $msg = "";
-
+//This file is taken from an external source
 /***********************************************************
 	0 - Remove The Temp image if it exists
 ***********************************************************/
