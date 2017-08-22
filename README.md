@@ -22,7 +22,7 @@ HTML, CSS, Javascript, php, jQuery, Ajax Database: MySQL
 ### Extensions for Linux
 * [Install-MySQL](https://help.ubuntu.com/lts/serverguide/mysql.html) - Install MySQL
 * [Install-php-7](https://askubuntu.com/questions/705880/how-to-install-php-7) - Install php-7.0/7.1
-* [Install-pecl](http://www.mkfoster.com/2009/01/04/how-to-install-a-php-pecl-extensionmodule-on-ubuntu/) 
+* [Install-pecl](http://www.mkfoster.com/2009/01/04/how-to-install-a-php-pecl-extensionmodule-on-ubuntu/) - Install pecl 
 
 ### Features
 * Login/ Registration page
