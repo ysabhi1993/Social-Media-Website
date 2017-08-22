@@ -58,7 +58,7 @@
                 <div class="search_results_footer_empty"></div>
             </div>
             <nav>
-                
+               
                 <?php
 				//Unread messages 
 				$messages = new Message($con, $userLoggedIn);
