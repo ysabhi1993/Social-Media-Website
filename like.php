@@ -21,7 +21,7 @@
             require 'config/config.php';
             include ('includes/classes/User.php');
             include ('includes/classes/Post.php');
-
+	// Select data from the corresponding tables
             if(isset($_SESSION['username'])){
                 $userLoggedIn = $_SESSION['username'];
                 $user_details_query = mysqli_query($con, "Select * from Users where username='$userLoggedIn'");
@@ -46,7 +46,7 @@
         $row = mysqli_fetch_array($user_details_query);
         $total_user_likes = $row['num_likes'];
         
-        //like button
+        //like button. Update the respective tables
         if(isset($_POST['like_button'])){
             $total_likes++;
             $query = mysqli_query($con, "update Posts set likes='$total_likes' where id = '$post_id'");
@@ -61,7 +61,7 @@
             }
         }
         
-        //unlike button
+        //unlike button. Update the respective tables
         if(isset($_POST['unlike_button'])){
             $total_likes--;
             $query = mysqli_query($con, "update Posts set likes='$total_likes' where id = '$post_id'");
