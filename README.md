@@ -52,7 +52,7 @@ HTML, CSS, Javascript, php, jQuery, Ajax Database: MySQL
 * Bootstrap
 
 ### Authors
-* **Abhishek S Yellanki
+* **Abhishek S Yellanki**
 
 ### Other Useful Links
 * [Icons](https://www.iconfinder.com/) - Get Icons
