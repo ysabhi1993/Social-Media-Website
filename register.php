@@ -4,10 +4,8 @@
     require 'includes/form_handlers/login_handler.php';
 ?>
 
-
-
 <html>
-    
+    <!-- Display on the website page -->    
     <head>
         <title> Welcome to ConnectMate!</title>
         <link rel="stylesheet" type="text/css" href="assets/css/register_style.css">
