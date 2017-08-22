@@ -2,6 +2,7 @@
     include 'includes/header.php';
 ?>
 
+<!-- Shows pending friend requests -->
 <div class="main_column column" id="main_column">
     
     <h4>Friend Requests</h4>
@@ -35,7 +36,7 @@
             }
             
             ?>
-    
+    <!-- accept/ignore Friend requests -->
     <form action="requests.php" method="post">
         <input type="submit" name="accept_request<?php echo $user_from; ?>" id="accept_button" value="Accept">
         <input type="submit" name="ignore_request<?php echo $user_from; ?>" id="ignore_button" value="Ignore">
