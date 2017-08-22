@@ -2,7 +2,7 @@
 include("includes/header.php");
 include("includes/form_handlers/settings_handler.php");
 ?>
-
+<!-- Change account details of the user -->
 <div class="main_column column">
 
 	<h4>Account Settings</h4>
