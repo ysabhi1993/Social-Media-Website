@@ -55,7 +55,7 @@ if(isset($_POST['post_message'])){
             echo "<h4>New Message</h4>";
         }
     ?>
-    
+    <!-- Messaging a friend -->
     <div class="message_post">
         <form action="" method="post">
             <?php
