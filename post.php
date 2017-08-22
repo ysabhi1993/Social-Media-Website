@@ -36,7 +36,5 @@ else {
 				$post = new Post($con, $userLoggedIn);
 				$post->getSinglePost($id);
 			?>
-
 		</div>
-
 	</div>
