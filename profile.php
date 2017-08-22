@@ -48,8 +48,7 @@
             padding-left: 0px;
         }
     </style>
-
-
+        <!-- Display what should be on the profile to the left -->
         <div class="profile_left">
             <img src="<?php echo $user_array['profile_pic']; ?>">
             
