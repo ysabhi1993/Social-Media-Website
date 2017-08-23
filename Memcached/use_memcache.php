@@ -1,7 +1,11 @@
 <?php
 
 //Create an object of Memcached
-$memcache = new Memcached();
+try{
+    	$memcache = new Memcached();
+}catch(Exception $e){
+    	die($e->getMessage());
+}
 //Create 4 instances 
 $MEMCACHED_SERVERS = array('127.0.0.1', '127.0.0.2', '127.0.0.3','127.0.0.4')
 foreach($MEMCACHED_SERVERS as $server){
