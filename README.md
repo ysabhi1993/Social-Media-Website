@@ -58,4 +58,6 @@ HTML, CSS, Javascript, php, jQuery, Ajax Database: MySQL
 ### Other Useful Links
 * [Icons](https://www.iconfinder.com/) - Get Icons
 * [Bootstrap](https://getbootstrap.com/docs/3.3/javascript/) - Bootstrap Modal download
+* [Memcached](http://php.net/manual/en/book.memcached.php) - Memcached with php
+* [Redis](https://redislabs.com/lp/php-redis/) - Redis with php
 * [Tutorials](https://www.tutorialspoint.com/web_development_tutorials.htm) - for all language references
