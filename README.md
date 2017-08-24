@@ -44,8 +44,8 @@ HTML, CSS, Javascript, php, jQuery, Ajax Database: MySQL
 
 **Stats**
 
-    * Redis - Hit/Miss = 0.928
-    * Memcached - Hit/Miss = 0.913
+    * Redis - Hit ratio = 0.928
+    * Memcached - Hit ratio = 0.913
 * Tested at each level of the design for responsiveness of the design.
 
 ### Built With
