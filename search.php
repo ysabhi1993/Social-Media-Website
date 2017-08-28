@@ -1,6 +1,7 @@
 <?php
 
 include("includes/header.php");
+include("includes/caches/use_redis.php");
 
 if(isset($_GET['q'])) {
 	$query = $_GET['q'];
@@ -23,35 +24,64 @@ else {
 	if($query == "")
 		echo "You must enter something in the search box.";
 	else {
-
 		//If query contains an underscore, assume user is searching for usernames
-		if($type == "username") 
-			$usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE username LIKE '$query%' AND user_closed='no' LIMIT 8");
+		if($type == "username"){ 
+            //Search for the username($query) from Users table in Cache and if necessary in DB
+            if($redis->exists("Users_details_".$query)){
+                $row = $redis->get("Users_details_".$query);
+            }else{
+                $usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE username LIKE '$query%' AND user_closed='no' LIMIT 8");
+                $row = mysqli_fetch_array($usersReturnedQuery);
+                $redis->set("Users_details_".$query, $row);
+            }
+        }
 		//If there are two words, assume they are first and last names respectively
 		else {
 
 			$names = explode(" ", $query);
-
-			if(count($names) == 3)
-				$usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' AND last_name LIKE '$names[2]%') AND user_closed='no'");
+                
+			if(count($names) == 3){
+                //Check for 3 words searches
+                if($redis->exists("User_details_".$names[0]."_".$names[2])){
+                    $row = $redis->get("User_details_".$names[0]."_".$names[2]);
+                }else{
+				    $usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' AND last_name LIKE '$names[2]%') AND user_closed='no'");
+                    $row = mysqli_fetch_array($usersReturnedQuery);
+                    $redis->set("User_details_".$names[0]."_".$names[2], $row);
+                }
+            }
 			//If query has one word only, search first names or last names 
-			else if(count($names) == 2)
-				$usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' AND last_name LIKE '$names[1]%') AND user_closed='no'");
-			else 
-				$usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' OR last_name LIKE '$names[0]%') AND user_closed='no'");
+			else if(count($names) == 2){
+                if($redis->exists("User_details_".$names[0]."_".$names[1])){
+                    $row = $redis->get("User_details_".$names[0]."_".$names[1]);
+                }else{
+                    $usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' AND last_name LIKE '$names[1]%') AND user_closed='no'");
+                    $row = mysqli_fetch_array($usersReturnedQuery);
+                    $redis->set("User_details_".$names[0]."_".$names[1], $row);
+                }
+            }
+			else {
+                if($redis->exists("User_details_first_last_".$names[0])){
+                    $row = $redis->get("User_details_first_last_".$names[0]);
+                }else{
+                    $usersReturnedQuery = mysqli_query($con, "SELECT * FROM Users WHERE (first_name LIKE '$names[0]%' OR last_name LIKE '$names[0]%') AND user_closed='no'");
+                    $row = mysqli_fetch_array($usersReturnedQuery);
+                    $redis->set("User_details_first_last".$names[0], $row);
+                }
+            }
 		}
 
 		//Check if results were found 
-		if(mysqli_num_rows($usersReturnedQuery) == 0)
+		if(count($row) == 0)
 			echo "We can't find anyone with a " . $type . " like: " .$query;
 		else 
-			echo mysqli_num_rows($usersReturnedQuery) . " results found: <br> <br>";
+			echo count($row) . " results found: <br> <br>";
 
 
 		echo "<p id='grey'>Try searching for:</p>";
 		echo "<a href='search.php?q=" . $query ."&type=name'>Names</a>, <a href='search.php?q=" . $query ."&type=username'>Usernames</a><br><br><hr id='search_hr'>";
 
-		while($row = mysqli_fetch_array($usersReturnedQuery)) {
+		while($row) {
 			$user_obj = new User($con, $user['username']);
 
 			$button = "";
