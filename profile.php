@@ -1,12 +1,19 @@
 <?php
     include ("includes/header.php");
+    include("includes/caches/use_redis.php");
 
     $message_obj = new Message($con, $userLoggedIn);
 
     if(isset($_GET['profile_username'])){
         $username = $_GET['profile_username'];
-        $user_details_query = mysqli_query($con,"select * From Users where username = '$username'");
-        $user_array = mysqli_fetch_array($user_details_query);
+        //Check Users table using the usernames
+        if($redis->exists("Users_details_".$username)){
+            $user_array = $redis->get("Users_details_".$username);
+        }else{
+            $user_details_query = mysqli_query($con,"select * From Users where username = '$username'");
+            $user_array = mysqli_fetch_array($user_details_query);
+            $redis->set("Users_details_".$username, $user_array);
+        }
         
         $num_friends = substr_count($user_array['friend_array'], "," ) - 1;
     }
