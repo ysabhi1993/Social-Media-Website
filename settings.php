@@ -1,6 +1,7 @@
 <?php 
 include("includes/header.php");
 include("includes/form_handlers/settings_handler.php");
+include("includes/caches/use_redis.php");
 ?>
 <!-- Change account details of the user -->
 <div class="main_column column">
@@ -15,8 +16,13 @@ include("includes/form_handlers/settings_handler.php");
 	Modify the values and click 'Update Details'
 
 	<?php
-	$user_data_query = mysqli_query($con, "SELECT first_name, last_name, email FROM Users WHERE username='$userLoggedIn'");
-	$row = mysqli_fetch_array($user_data_query);
+    if($redis->exists("Users_details_first_last_email_".$userLoggedIn)){
+        $row = $redis->get("Users_details_first_last_email_".$userLoggedIn);
+    }else{
+        $user_data_query = mysqli_query($con, "SELECT first_name, last_name, email FROM Users WHERE username='$userLoggedIn'");
+        $row = mysqli_fetch_array($user_data_query);
+        $redis->set("Users_details_first_last_email_".$userLoggedIn, $row);
+    }
 
 	$first_name = $row['first_name'];
 	$last_name = $row['last_name'];
