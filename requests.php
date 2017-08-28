@@ -1,6 +1,9 @@
 <?php
     include 'includes/header.php';
     include 'includes/caches/use_redis.php';
+    //For Memcached:
+    //include("includes/caches/use_memcache.php");
+    //replace $redis with $memcached
 ?>
 
 <!-- Shows pending friend requests -->
