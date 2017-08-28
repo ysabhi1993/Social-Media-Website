@@ -2,6 +2,9 @@
 include("includes/header.php");
 include("includes/form_handlers/settings_handler.php");
 include("includes/caches/use_redis.php");
+//For Memcached:
+//include("includes/caches/use_memcache.php");
+//replace $redis with $memcached
 ?>
 <!-- Change account details of the user -->
 <div class="main_column column">
