@@ -1,5 +1,6 @@
 <?php
     include 'includes/header.php';
+    include 'includes/caches/use_redis.php';
 
     if(isset($_POST['post'])){
         $post = new Post($con, $userLoggedIn);
@@ -47,7 +48,14 @@
 
             <div class="trends">
                 <?php 
-                $query = mysqli_query($con, "SELECT * FROM Trends ORDER BY hits DESC LIMIT 9");
+                //Check for details of Trends table
+                if($redis->exists("Trends_index_all_records")){
+                    $query = $redis->get("Trends_index_all_records");
+                }else{
+                    $query_from_table = mysqli_query($con, "SELECT * FROM Trends ORDER BY hits DESC LIMIT 9");
+                    $query = mysqli_fetch_array($query_from_table);
+                    $redis->set("Trends_index_all_records", $query);
+                }
 
                 foreach ($query as $row) {
 
