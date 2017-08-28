@@ -20,6 +20,11 @@
             include ('includes/classes/Post.php');
             include("includes/classes/Notification.php");
             include("includes/caches/use_redis.php");
+            
+            //For Memcached:
+            //include("includes/caches/use_memcache.php");
+            //replace $redis with $memcached
+            
 
             if(isset($_SESSION['username'])){
                 $userLoggedIn = $_SESSION['username'];
