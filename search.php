@@ -2,6 +2,9 @@
 
 include("includes/header.php");
 include("includes/caches/use_redis.php");
+//For Memcached:
+//include("includes/caches/use_memcache.php");
+//replace $redis with $memcached
 
 if(isset($_GET['q'])) {
 	$query = $_GET['q'];
