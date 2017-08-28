@@ -2,6 +2,10 @@
     include 'includes/header.php';
     include 'includes/caches/use_redis.php';
 
+    //For Memcached:
+    //include("includes/caches/use_memcache.php");
+    //replace $redis with $memcached
+
     if(isset($_POST['post'])){
         $post = new Post($con, $userLoggedIn);
         $post->submitPost($_POST['post_text'],'none');
