@@ -21,11 +21,20 @@
             require 'config/config.php';
             include ('includes/classes/User.php');
             include ('includes/classes/Post.php');
+            include ('includes/caches/use_redis.php');
+        
 	// Select data from the corresponding tables
             if(isset($_SESSION['username'])){
                 $userLoggedIn = $_SESSION['username'];
-                $user_details_query = mysqli_query($con, "Select * from Users where username='$userLoggedIn'");
-                $user = mysqli_fetch_array($user_details_query);
+                //Check for user details in Users table
+                if($redis->exists("Users_details_".$userLoggedIn)){
+                    $user = $redis->get("Users_details_".$userLoggedIn);
+                }else{
+                    $user_details_query = mysqli_query($con, "Select * from Users where username='$userLoggedIn'");
+                    $user = mysqli_fetch_array($user_details_query);
+                    $redis->set("Users_details_".$userLoggedIn, $user);
+                }
+                
             }else{
                 header("Location: register.php");
             }
@@ -35,15 +44,25 @@
         if(isset($_GET['post_id'])){
             $post_id = $_GET['post_id'];
         }
+        if($redis->exists("Posts_like_".$post_id)){
+            $row = $redis->get("Posts_like_".$post_id);
+        }else{
+            $get_likes = mysqli_query($con, "select likes,added_by from Posts where id='$post_id'") ;
+            $row = mysqli_fetch_array($get_likes);
+            $redis->set("Posts_like_".$post_id, $row);
+        }
         
-        $get_likes = mysqli_query($con, "select likes,added_by from Posts where id='$post_id'") ;
-        $row = mysqli_fetch_array($get_likes);
         
         $total_likes = $row['likes'];
         $user_liked = $row['added_by'];
-        
-        $user_details_query = mysqli_query($con, "select * from Users where username = '$user_liked'");
-        $row = mysqli_fetch_array($user_details_query);
+        //Check for Users details based on user_liked
+        if($redis_exists("Users_details_".$user_liked)){
+            $row = $redis->get("Users_details_".$user_liked);
+        }else{
+            $user_details_query = mysqli_query($con, "select * from Users where username = '$user_liked'");
+            $row = mysqli_fetch_array($user_details_query);
+            $redis->set("Users_details_".$user_liked, $row);
+        }
         $total_user_likes = $row['num_likes'];
         
         //like button. Update the respective tables
@@ -70,10 +89,15 @@
             $insert_user = mysqli_query($con, "delete from likes where username = '$userLoggedIn' and post_id='$post_id'");
 
         }
+        //Check for details from likes table based on userLoggedIn and post_id
+        if($redis->exists("Likes_details_".$userLoggedIn."_".$post_id)){
+            $num_rows = $redis->get("Likes_details_".$userLoggedIn."_".$post_id);
+        }else{
+            $check_query = mysqli_query($con, "select * from likes where username = '$userLoggedIn' and post_id='$post_id'");
+            $num_rows = mysqli_num_rows($check_query);
+            $redis->set("Likes_details_".$userLoggedIn."_".$post_id, $num_rows);
+        }
         
-        
-        $check_query = mysqli_query($con, "select * from likes where username = '$userLoggedIn' and post_id='$post_id'");
-        $num_rows = mysqli_num_rows($check_query);
         
         if($num_rows > 0){
             echo '<form action ="like.php?post_id='.$post_id.'" method = "post">
