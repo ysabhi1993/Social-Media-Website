@@ -1,5 +1,6 @@
 <?php
     include 'includes/header.php';
+    include 'includes/caches/use_redis.php';
 ?>
 
 <!-- Shows pending friend requests -->
@@ -8,11 +9,18 @@
     <h4>Friend Requests</h4>
     
     <?php
+    if($redis->exists("friend_request_details_".$userLoggedIn)){
+        $row = $redis->get("friend_request_details_".$userLoggedIn);
+    }else{
+        $query = mysqli_query($con, "select * from friend_request where user_to = '$userLoggedIn'");
+        $row = mysqli_fetch_array($query);
+        $redis->set("friend_request_details_".$userLoggedIn, $row);
+    }
     $query = mysqli_query($con, "select * from friend_request where user_to = '$userLoggedIn'");
-    if(mysqli_num_rows($query) == 0)
+    if(count($row) == 0)
         echo "No Friend Requests at this time!";
     else{
-        while($row = mysqli_fetch_array($query)){
+        while($row){
             $user_from = $row['user_from'];
             $user_from_obj = new User($con, $user_from);
             
