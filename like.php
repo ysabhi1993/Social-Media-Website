@@ -22,6 +22,9 @@
             include ('includes/classes/User.php');
             include ('includes/classes/Post.php');
             include ('includes/caches/use_redis.php');
+	    //For Memcached:
+            //include("includes/caches/use_memcache.php");
+            //replace $redis with $memcached
         
 	// Select data from the corresponding tables
             if(isset($_SESSION['username'])){
