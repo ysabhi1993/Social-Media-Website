@@ -19,11 +19,18 @@
             include ('includes/classes/User.php');
             include ('includes/classes/Post.php');
             include("includes/classes/Notification.php");
+            include("includes/caches/use_redis.php");
 
             if(isset($_SESSION['username'])){
                 $userLoggedIn = $_SESSION['username'];
-                $user_details_query = mysqli_query($con, "Select * from Users where username='$userLoggedIn'");
-                $user = mysqli_fetch_array($user_details_query);
+                //Check if the Users details are present in redis
+                if($redis->exists("Users_details".$userLoggedIn)){
+                    $user = $redis->get("Users_details_".$userLoggedIn);
+                }else{
+                    $user_details_query = mysqli_query($con, "Select * from Users where username='$userLoggedIn'");
+                    $user = mysqli_fetch_array($user_details_query);
+                    $redis->set("Users_details_".$userLoggedIn, $user);
+                }
             }else{
                 header("Location: register.php");
             }
@@ -48,9 +55,15 @@
             if(isset($_GET['post_id'])){
                 $post_id = $_GET['post_id'];
             }
-        
-            $user_query = mysqli_query($con, "select added_by, user_to from Posts where id='$post_id'");
-            $row = mysqli_fetch_array($user_query);
+            //Check for added by and user to from the Posts table
+            if($redis->exists("Posts_Comment_Frame_".$post_id)){
+                $row = $redis->get("Posts_Comment_Frame_".$post_id)
+            }else{
+                $user_query = mysqli_query($con, "select added_by, user_to from Posts where id='$post_id'");
+                $row = mysqli_fetch_array($user_query);
+                $redis->set("Posts_Comment_Frame_".$post_id, $row);
+            }
+            
         
             $posted_to = $row['added_by'];
         
@@ -70,10 +83,16 @@
                     $notification->insertNotification($post_id, $user_to, "profile_comment");
                 }
 
-
-                $get_commenters = mysqli_query($con, "SELECT * FROM Comments WHERE post_id='$post_id'");
+                //Check for the details from Comments table
+                if($redis->exists("Comments_details_".$post_id)){
+                    $row = $redis->get("Comments_details_".$post_id)
+                }else{
+                    $get_commenters = mysqli_query($con, "SELECT * FROM Comments WHERE post_id='$post_id' order by id asc");
+                    $row = mysqli_fetch_array($get_commenters);
+                    $redis->set("Comments_details_".$post_id, $row);
+                }
                 $notified_users = array();
-                while($row = mysqli_fetch_array($get_commenters)) {
+                while($row) {
 
                     if($row['posted_by'] != $posted_to && $row['posted_by'] != $user_to 
                         && $row['posted_by'] != $userLoggedIn && !in_array($row['posted_by'], $notified_users)) {
@@ -100,11 +119,19 @@
         <!-- Load Comments-->
         
         <?php 
-            $get_comments = mysqli_query($con, "select * from Comments where post_id = '$post_id' order by id asc");
-            $count = mysqli_num_rows($get_comments);
+            //Check for the details from Comments table
+                if($redis->exists("Comments_details_".$post_id)){
+                    $comment = $redis->get("Comments_details_".$post_id)
+                }else{
+                    $get_comments = mysqli_query($con, "select * from Comments where post_id = '$post_id' order by id asc");
+                    $comment = mysqli_fetch_array($get_comments);
+                    $redis->set("Comments_details_".$post_id, $row);
+                }
+            
+            $count = count($row);
             
             if($count != 0){
-                while($comment = mysqli_fetch_array($get_comments)){
+                while($comment){
                     
                     $comment_body = $comment['post_body'];
                     $posted_to = $comment['posted_to'];
