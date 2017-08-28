@@ -1,0 +1,30 @@
+Command_frame.php:
+	"Users_details_".$userLoggedIn
+	"Posts_Comment_Frame_".$post_id
+	"Comments_details_".$post_id
+
+index.php:
+	"Trends_index_all_records"
+
+like.php
+	"Users_details_".$userLoggedIn
+	"Posts_like_".$post_id
+	"Users_details_".$user_liked
+	"Likes_details_".$userLoggedIn."_".$post_id
+
+profile.php
+	"Users_details_".$username
+
+requests.php
+	"friend_request_details_".$userLoggedIn
+
+search.php
+	"Users_details_".$query
+	"User_details_".$names[0]."_".$names[2]
+	"User_details_".$names[0]."_".$names[1]
+	"User_details_first_last_".$names[0]
+
+settings.php
+	"Users_details_first_last_email_".$userLoggedIn
+	
+
